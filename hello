@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+// console.log('hello', process.argv[2]);
+require('shelljs/global');
+if (!which('git')) {
+    echo('Sorry, this script requires git');
+    exit(1);
+}
+
+const distDir = 'D:\\workspace\\work_temp2\\mobile_store\\dist';
+const distJs = `${distDir}\\js\\**.*`;
+const distCss = `${distDir}\\css\\**.*`;
+
+const targetDir = 'D:\\workspace\\store-open\\store-app\\src\\main\\resources\\static';
+const targetCssDir = `${targetDir}\\css\\mobile`;
+const targetJsDir = `${targetDir}\\js\\mobile`;
+
+const removedFileByPrefix = ['vendor', 'main', 'manifest'];
+
+removedFileByPrefix.forEach((file) => {
+    rm(`${targetJsDir}\\${file}.**.js`);
+    rm(`${targetJsDir}\\${file}.**.map`);
+
+    rm(`${targetCssDir}\\${file}.**.css`);
+    rm(`${targetCssDir}\\${file}.**.map`);
+});
+
+cp('-R', distJs, targetJsDir);
+cp('-R', distCss, targetCssDir);
