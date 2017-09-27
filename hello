@@ -6,6 +6,9 @@ if (!which('git')) {
     exit(1);
 }
 
+const testFtl = 'D:\\workspace\\store-open\\store-app\\src\\main\\resources\\templates\\mobile\\appStore.ftl';
+// const testFtl = 'D:\\test\\test.ftl';
+
 const distDir = 'D:\\workspace\\work_temp2\\mobile_store\\dist';
 const distJs = `${distDir}\\js\\**.*`;
 const distCss = `${distDir}\\css\\**.*`;
@@ -14,15 +17,68 @@ const targetDir = 'D:\\workspace\\store-open\\store-app\\src\\main\\resources\\s
 const targetCssDir = `${targetDir}\\css\\mobile`;
 const targetJsDir = `${targetDir}\\js\\mobile`;
 
-const removedFileByPrefix = ['vendor', 'main', 'manifest'];
+const jsPrefix = ['vendor', 'main', 'manifest'];
+const cssPrefix = ['vendor', 'main'];
 
-removedFileByPrefix.forEach((file) => {
+jsPrefix.forEach((file) => {
     rm(`${targetJsDir}\\${file}.**.js`);
     rm(`${targetJsDir}\\${file}.**.map`);
+}); 
 
+cssPrefix.forEach((file) => {
     rm(`${targetCssDir}\\${file}.**.css`);
     rm(`${targetCssDir}\\${file}.**.map`);
 });
 
 cp('-R', distJs, targetJsDir);
 cp('-R', distCss, targetCssDir);
+
+console.log('\njs==============================\n');
+ls(distJs).forEach((file) => {
+    console.log(file);
+});
+
+console.log('\ncss============================\n');
+ls(distCss).forEach((file) => {
+    console.log(file);
+});
+
+const cssMainRx = /css\/mobile\/main.[a-z0-9]{6}.css/g;
+const cssVendorRx = /css\/mobile\/vendor.[a-z0-9]{6}.css/g;
+
+ls(`${targetCssDir}\\**.css`).forEach((css) => {
+    const mainCssPath = css.match(cssMainRx);
+    const vendorCssPath = css.match(cssVendorRx);
+
+    if (mainCssPath) {
+        sed('-i', cssMainRx, mainCssPath[0], testFtl);
+    }
+    if (vendorCssPath) {
+        sed('-i', cssVendorRx, vendorCssPath[0], testFtl);
+    }
+
+});
+
+const jsMainRx = /js\/mobile\/main.[a-z0-9]{6}.js/g;
+const jsVendorRx = /js\/mobile\/vendor.[a-z0-9]{6}.js/g;
+const jsManifestRx = /js\/mobile\/manifest.[a-z0-9]{6}.js/g;
+
+ls(`${targetJsDir}\\**.js`).forEach((js) => {
+    const mainJsPath = js.match(jsMainRx);
+    const vendorJsPath = js.match(jsVendorRx);
+    const manifestJsPath = js.match(jsManifestRx);
+
+    if (mainJsPath) {
+        sed('-i', jsMainRx, mainJsPath[0], testFtl);
+    }
+    if (vendorJsPath) {
+        sed('-i', jsVendorRx, vendorJsPath[0], testFtl);
+    }
+    if (manifestJsPath) {
+        sed('-i', jsManifestRx, manifestJsPath[0], testFtl);
+    }
+
+});
+
+console.log('\ntemplate==============================\n')
+exec(`cat ${testFtl}`);
