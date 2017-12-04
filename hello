@@ -6,28 +6,29 @@ if (!which('git')) {
     exit(1);
 }
 
-const testFtl = 'D:\\workspace\\store-open\\store-app\\src\\main\\resources\\templates\\mobile\\appStore.ftl';
-// const testFtl = 'D:\\test\\test.ftl';
+const testFtl = '/Users/hc/workspace/store-app/store-app/src/main/resources/templates/mobile/appStore.ftl';
+// const testFtl = 'D:\\test\\test.ftl'; //windows 路径为两个反斜线
 
-const distDir = 'D:\\workspace\\work_temp2\\mobile_store\\dist';
-const distJs = `${distDir}\\js\\**.*`;
-const distCss = `${distDir}\\css\\**.*`;
+const distDir = '/Users/hc/workspace/mobile_store/dist';
+const distJs = `${distDir}/js/**.*`;
+const distCss = `${distDir}/css/**.*`;
 
-const targetDir = 'D:\\workspace\\store-open\\store-app\\src\\main\\resources\\static';
-const targetCssDir = `${targetDir}\\css\\mobile`;
-const targetJsDir = `${targetDir}\\js\\mobile`;
+const targetDir = '/Users/hc/workspace/store-app/store-app/src/main/resources/static';
+const targetCssDir = `${targetDir}/css/mobile`;
+const targetJsDir = `${targetDir}/js/mobile`;
 
 const jsPrefix = ['vendor', 'main', 'manifest'];
 const cssPrefix = ['vendor', 'main'];
 
+// 删除.gz
+rm(`${distDir}/js/*.gz`);
+
 jsPrefix.forEach((file) => {
-    rm(`${targetJsDir}\\${file}.**.js`);
-    rm(`${targetJsDir}\\${file}.**.map`);
+    rm(`${targetJsDir}/${file}.*`);
 }); 
 
 cssPrefix.forEach((file) => {
-    rm(`${targetCssDir}\\${file}.**.css`);
-    rm(`${targetCssDir}\\${file}.**.map`);
+    rm(`${targetCssDir}/${file}.*`);
 });
 
 cp('-R', distJs, targetJsDir);
@@ -46,7 +47,7 @@ ls(distCss).forEach((file) => {
 const cssMainRx = /css\/mobile\/main.[a-z0-9]{6}.css/g;
 const cssVendorRx = /css\/mobile\/vendor.[a-z0-9]{6}.css/g;
 
-ls(`${targetCssDir}\\**.css`).forEach((css) => {
+ls(`${targetCssDir}/*.css`).forEach((css) => {
     const mainCssPath = css.match(cssMainRx);
     const vendorCssPath = css.match(cssVendorRx);
 
@@ -63,7 +64,7 @@ const jsMainRx = /js\/mobile\/main.[a-z0-9]{6}.js/g;
 const jsVendorRx = /js\/mobile\/vendor.[a-z0-9]{6}.js/g;
 const jsManifestRx = /js\/mobile\/manifest.[a-z0-9]{6}.js/g;
 
-ls(`${targetJsDir}\\**.js`).forEach((js) => {
+ls(`${targetJsDir}/*.js`).forEach((js) => {
     const mainJsPath = js.match(jsMainRx);
     const vendorJsPath = js.match(jsVendorRx);
     const manifestJsPath = js.match(jsManifestRx);
